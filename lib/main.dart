@@ -1,7 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:user_interface_project1/checkout.dart';
+import 'package:user_interface_project1/count.dart';
+
 
 void main() {
-  runApp(new MainPage());
+  runApp(new HomeScreen());
+}
+
+class HomeScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return new MaterialApp(
+      home: new MainPage(),
+      routes: <String, WidgetBuilder>{
+        '/setting': (BuildContext context) => new CheckoutPage(),
+      },
+    );
+  }
 }
 
 class MainPage extends StatelessWidget {
@@ -13,6 +28,9 @@ class MainPage extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           bottom: TabBar(
+              indicatorWeight: 1,
+             indicatorColor: Colors.red[100],
+             unselectedLabelColor: Colors.white,
             tabs: [
               Tab(text: 'Plush'),
               Tab(
@@ -21,20 +39,19 @@ class MainPage extends StatelessWidget {
               Tab(text: 'Tees'),
             ],
           ),
-          title: Text('BABY YODA MERCHANDISE'),
+          title: Text('         BABY YODA MERCHANDISE'),
           backgroundColor: Color(0xFF1B9772),
           actions: <Widget>[
-             Padding(
-      padding: EdgeInsets.only(right: 20.0),
-      child: GestureDetector(
-        onTap: () {},
-        child: Icon(
-          Icons.shopping_cart,
-          size: 26.0,
-        ),
-      )
-    ),
-  ],
+            Padding(
+                padding: EdgeInsets.only(right: 20.0),
+                child: GestureDetector(
+                  onTap: () => Navigator.of(context).pushNamed('/setting'),
+                  child: Icon(
+                    Icons.shopping_cart,
+                    size: 26.0,
+                  ),
+                )),
+          ],
           flexibleSpace: Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -62,10 +79,10 @@ class PlushScreen extends StatelessWidget {
           body: Center(
             child: Text(
               'Display all the Plush',
-              style: TextStyle(fontSize: 21),
+              style: TextStyle(fontSize: 21, color: Colors.white),
             ),
           ),
-          backgroundColor: Colors.white,//Color(0xFF4F5B55),
+          backgroundColor: Color(0xFF4F5B55),
         ));
   }
 }
@@ -79,9 +96,9 @@ class PhoneCaseScreen extends StatelessWidget {
           body: Center(
               child: Text(
             'Display all the Phone Case',
-            style: TextStyle(fontSize: 21),
+            style: TextStyle(fontSize: 21, color: Colors.white),
           )),
-          backgroundColor: Colors.white,//Color(0xFF4F5B55),
+          backgroundColor: Color(0xFF4F5B55),
         ));
   }
 }
@@ -95,9 +112,9 @@ class TeesScreen extends StatelessWidget {
           body: Center(
               child: Text(
             'Display all the Tees',
-            style: TextStyle(fontSize: 21),
+            style: TextStyle(fontSize: 21, color: Colors.white),
           )),
-          backgroundColor: Colors.white,//Color(0xFF4F5B55),
+          backgroundColor: Color(0xFF4F5B55),
         ));
   }
 }
