@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'components/item-card.dart';
 
 void main() {
   runApp(new MainPage());
@@ -54,19 +55,42 @@ class MainPage extends StatelessWidget {
 }
 
 class PlushScreen extends StatelessWidget {
+  final List<DropdownMenuItem<String>> colorItems = [
+    DropdownMenuItem(
+      child: Text('Green'),
+      value: 'green',
+    ),
+    DropdownMenuItem(
+      child: Text('Blue'),
+      value: 'blue',
+    ),
+    DropdownMenuItem(
+      child: Text('Pink'),
+      value: 'pink',
+    ),
+  ];
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: Scaffold(
-          body: Center(
-            child: Text(
-              'Display all the Plush',
-              style: TextStyle(fontSize: 21),
+    return Scaffold(
+      body: Center(
+        child: Column(
+          children: <Widget>[
+            Row(
+              children: <Widget>[
+                ItemCard(
+                  title: 'The Child Plush',
+                  imagePath: 'assets/Baby-Yoda-meme.jpeg',
+                  cosmeticDropdownItems: this.colorItems,
+                  price: 12.99,
+                )
+              ],
             ),
-          ),
-          backgroundColor: Colors.white,//Color(0xFF4F5B55),
-        ));
+          ],
+        ),
+      ),
+      backgroundColor: Color(0xFF4F5B55)
+    );
   }
 }
 
