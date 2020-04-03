@@ -46,6 +46,24 @@ flutter:
   #To add assets to your application, add an assets section, like this:
   assets:
     - assets/Baby-Yoda-meme.jpeg
+    - assets/plush-1.PNG
+    - assets/plush-2.PNG
+    - assets/plush-3.PNG
+    - assets/plush-4.PNG
+    - assets/plush-5.PNG
+    - assets/plush-6.PNG
+    - assets/case-1.PNG
+    - assets/case-2.PNG
+    - assets/case-3.PNG
+    - assets/case-4.PNG
+    - assets/case-5.PNG
+    - assets/case-6.PNG
+    - assets/tee-1.PNG
+    - assets/tee-2.PNG
+    - assets/tee-3.PNG
+    - assets/tee-4.PNG
+    - assets/tee-5.PNG
+    - assets/tee-6.PNG
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

@@ -1,259 +1,329 @@
+import 'dart:ui';
+
 import 'package:flutter/rendering.dart';
-import 'package:flutter_counter/flutter_counter.dart';
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(new CheckoutPage());
+import 'package:user_interface_project1/main.dart';
+
+class CartItem {
+  CartItem({
+    this.item,
+    this.key,
+    this.cosmeticText
+  });
+
+  final YodaItem item;
+  final Key key;
+  final String cosmeticText;
+  int quantity = 1;
 }
 
-int _counter = 0;
+List<CartItem> shoppingCart = [];
 
-class CheckoutScreen extends StatelessWidget {
+class CheckoutPage extends StatefulWidget {
+  CheckoutPage({Key key}) : super(key: key);
+
+  @override
+  _CheckoutPageState createState() => _CheckoutPageState();
+
+  static List<CartItem> getShoppingCart() => shoppingCart;
+}
+
+class _CheckoutPageState extends State<CheckoutPage> {
+  List<CartItem> cart = CheckoutPage.getShoppingCart();
+  double totalPrice = 0;
+
+  void setTotalPrice() {
+    this.totalPrice = this.cart.length > 0 ? this.cart
+    .map((item) => item.item.price * item.quantity)
+    .reduce((total, current) => total + current) : 0;
+  }
+
+  
+
+  @override
+  void initState() {
+    setTotalPrice();
+    super.initState();
+  }
+  
   @override
   Widget build(BuildContext context) {
-    return new MaterialApp(
-      home: new CheckoutPage(),
-      // routes: <String, WidgetBuilder>{
-      //   '/MyCounter': (BuildContext context) => new MyCounterpage(),
-      //},
+    return Scaffold(
+      backgroundColor: Color(0xFF4F5B55),
+      appBar: AppBar(
+        title: Text('BABY YODA MERCHANDISE'),
+        titleSpacing: 10.0,
+        backgroundColor: Color(0xFF1B9772),
+        actions: <Widget>[          
+          Padding(
+            padding: EdgeInsets.only(right: 20.0),
+            child: GestureDetector(
+              onTap: () => {},
+              child: Icon(
+                Icons.shopping_cart,
+                size: 26.0,
+              ),
+            )
+          ),
+        ],
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [const Color(0xFF1B9772), const Color(0xFF0D4837)],
+            ),
+          ),
+        ),
+      ),
+      body: ListView(
+        children: cart.asMap().entries.map((entry) {
+          var item = entry.value;
+          var index = entry.key;
+          return CartItemCard(
+            imagePath: item.item.imagePath,
+            price: item.item.price,
+            title: item.item.title,
+            cosmeticText: item.cosmeticText,
+            quantity: item.quantity,
+            index: index,
+            onRemove: () {
+              setState(() {
+                cart.removeAt(index);
+                setTotalPrice();
+              });
+            },
+            onQuantityChange: (newQuantity) {
+              setState(() {
+                cart[index].quantity = newQuantity;
+                setTotalPrice();
+              });
+            },
+          );
+        }).toList()
+      ),
+      bottomNavigationBar: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Container(
+            margin: EdgeInsets.only(right: 10),
+            child: Text(
+              'Total: \$${this.totalPrice.toStringAsFixed(2)}',
+              style: TextStyle(
+                color: Color(0xFFF4F4E2),
+                fontWeight: FontWeight.bold,
+                fontSize: 24
+              ),
+            ),
+          ),
+          FlatButton(
+            onPressed: () {},
+            padding: EdgeInsets.all(0.5),                                                                                           
+            child: Ink(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                  colors: [const Color(0xFF159E94), const Color(0xFF10DC4D)],
+                ),
+                borderRadius: BorderRadius.circular(45),
+              ),
+              child: Container(
+                constraints: BoxConstraints(
+                  minHeight: 30,
+                  minWidth: 180
+                ),
+                margin: EdgeInsets.only(top: 10),
+                child: Text(
+                  'Proceed to Payment',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Color(0xFFF4F4E2),
+                    fontSize: 16
+                  )
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
 
-class CheckoutPage extends StatefulWidget {
-  CheckoutPage({Key key, this.title}) : super(key: key);
+class CartItemCard extends StatefulWidget {
+  CartItemCard({ 
+    Key key,
+    this.title,
+    this.imagePath,
+    this.price,
+    this.quantity,
+    this.cosmeticText,
+    this.index,
+    this.onRemove,
+    this.onQuantityChange
+  }): super(key: key);
+
   final String title;
-  int count = 0;
+  final String imagePath;
+  final double price;
+  final int quantity;
+  final String cosmeticText;
+  final int index;
+  final void Function() onRemove;
+  final void Function(int) onQuantityChange;
 
-  @override
-  _CheckoutPageState createState() => _CheckoutPageState();
+  _CartItemCardState createState() => _CartItemCardState(quantity: quantity);
 }
 
-class _CheckoutPageState extends State<CheckoutPage> {
-  int _counter = 0;
 
-    void increment() {
-    setState(() {
-      _counter++;
-    });
-  }
+class _CartItemCardState extends State<CartItemCard> {
+  int quantity = 1;
 
-  void decrement() {
-    setState(() {
-      if (_counter != 0) _counter--;
-    });
-  }
-
-Widget buildOneWidget()
-{ return FlatButton(
-  onPressed: (){
-     setState(() {
-      _counter++;
-    });
-  },
-  child: Container()); 
-
-}
+  _CartItemCardState({this.quantity});
 
   @override
   Widget build(BuildContext context) {
-  
-    return DefaultTabController(
-        length: 1,
-        child: Scaffold(
-            backgroundColor: Color(0xFF4F5B55),
-            appBar: AppBar(
-              backgroundColor: Color(0xFF1B9772),
-              bottom: TabBar(
-                indicatorWeight: 0.1,
-                indicatorColor: Colors.red[100],
-                tabs: [
-                  Tab(
-                    text: "Checkout     >     Payment Info     >   Review",
-                    //icon: Icon(Icons.shopping_basket),
+    return Row(
+      children: <Widget>[
+        Card(
+          shape: new RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30.0)
+          ),
+          color: Color(0xFFF4F4E2),
+          child:Container(
+            width: 155,
+            height: 180,
+            alignment: Alignment.center,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                Container(
+                  margin: EdgeInsets.only(top: 10),
+                  decoration: BoxDecoration(
+                    boxShadow: [BoxShadow(blurRadius: 2)],
+                    borderRadius: BorderRadius.circular(15),
                   ),
-                ],
-              ),
-              title: Text('BABY YODA MERCHANDISE'),
-              actions: <Widget>[
-                Padding(
-                    padding: EdgeInsets.only(right: 20.0),
-                    child: GestureDetector(
-                      // onTap: () =>
-                      //     Navigator.of(context).pushNamed('/MyCounter'),
-                      child: Icon(
-                        Icons.shopping_cart,
-                        size: 26.0,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(15),
+                    child: Image.asset(
+                      widget.imagePath,
+                      height: 110,
+                      width: 125,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                Row(
+                  children: <Widget>[
+                    IconButton(
+                      icon: Icon(Icons.remove_circle),
+                      color: Color(0xFF159E94),
+                      onPressed: () { 
+                        setState(() {
+                          this.quantity--;
+                          if (this.quantity < 1) this.quantity = 1;
+                          widget.onQuantityChange(this.quantity);
+                        });
+                      },
+                      iconSize: 36,
+                    ),
+                    Text('Qty. ${this.quantity}', 
+                      style: TextStyle(
+                        color: Color(0xFF1A936F),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16
                       ),
-                    )),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.add_circle),
+                      color: Color(0xFF0FC928),
+                      onPressed: () { 
+                        setState(() {
+                          this.quantity++;
+                        });
+                        widget.onQuantityChange(this.quantity);
+                      },
+                      iconSize: 36,
+                    ),
+                  ],
+                )
               ],
-              flexibleSpace: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [const Color(0xFF1B9772), const Color(0xFF0D4837)],
-                  ),
-                ),
-              ),
             ),
-            body: ListView(children: <Widget>[
-              button2,
-              paymentButton,
-              buildOneWidget(),
-              Row(children: <Widget>[
-                RaisedButton(
-                  onPressed: increment,
-                  child: Container(
-                    decoration: const BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: <Color>[
-                            Color(0xFF159E94),
-                            Color(0xFF10DC4D),
-                          ],
-                        ),
-                        borderRadius: BorderRadius.all(Radius.circular(100.0))),
-                    padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                    child: Icon(Icons.add_circle),
-                  ),
-                ),
-                Text(
-                  '   $_counter  ',
-                  style: TextStyle(color: Colors.red, fontSize: 20),
-                ),
-                RaisedButton(
-                  onPressed: decrement,
-                  child: Container(
-                    decoration: const BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: <Color>[
-                            Color(0xFF159E94),
-                            Color(0xFF10DC4D),
-                          ],
-                        ),
-                        borderRadius: BorderRadius.all(Radius.circular(100.0))),
-                    padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                    child: Icon(Icons.delete),
-                  ),
-                ),
-
-                
-              ])
-            ])));
-  }
-
-  Widget paymentButton = new Container(
-    margin: const EdgeInsets.only(top: 300, right: 70, left: 80),
-    child: Row(children: <Widget>[
-      RaisedButton(
-        onPressed: () {},
-        textColor: Colors.white,
-        padding: const EdgeInsets.all(0.0),
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(80.0)),
-        child: Container(
-          decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: <Color>[
-                  Color(0xFF159E94),
-                  Color(0xFF10DC4D),
-                ],
-              ),
-              borderRadius: BorderRadius.all(Radius.circular(80.0))),
-          padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-          child:
-              const Text('Proceed to Payment', style: TextStyle(fontSize: 20)),
+          )
         ),
-      ),
-    ]),
-  );
-}
-
-Widget button2 = new Container(
-    margin: const EdgeInsets.only(top: 10, right: 80, left: 6),
-    width: 100,
-    child: Card(
-        margin: const EdgeInsets.only(top: 10, right: 100, left: 2),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15.0),
-        ),
-        color: Colors.white,
-        elevation: 10,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            // const ListTile(
-            //   leading: Icon(Icons.album, size: 70),
-            //   title: Text('The child plush',
-            //       style: TextStyle(color: Colors.black, fontSize: 20)),
-            //   subtitle: Text('\$45', style: TextStyle(color: Colors.black)),
-            // ),
-
             Container(
-              height: 116.0,
-              width: 100.0,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(5),
-                      topLeft: Radius.circular(5)),
-                  image: DecorationImage(
-                      alignment: Alignment.center,
-                      fit: BoxFit.fitWidth,
-                      image: NetworkImage(
-                          "https://s.yimg.com/ny/api/res/1.2/hSoJ3LLzqA3PYmbazUpa7A--~A/YXBwaWQ9aGlnaGxhbmRlcjtzbT0xO3c9ODAw/https://media-mbst-pub-ue1.s3.amazonaws.com/creatr-uploaded-images/2019-12/de8af8b0-1d20-11ea-bafe-ddc47d923b23"))),
+              padding: EdgeInsets.symmetric(
+                vertical: 10.0,
+                horizontal: 5.0
+              ),
+              child: Text(
+                widget.title,
+                style: TextStyle(
+                  color: Color(0xFFFDFAFA),
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
-            counterButton,
-
-            // Text('  The Child Plush  '),
-            // Text(" \$24.99  "),
+            Container(
+              padding: EdgeInsets.symmetric(
+                vertical: 20.0,
+                horizontal: 5.0
+              ),
+              child: Text(
+                '\$${widget.price.toStringAsFixed(2)}',
+                style: TextStyle(
+                  color: Color(0xFFFDFAFA),
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold
+                ),
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(
+                vertical: 5.0,
+                horizontal: 5.0
+              ),
+              child: Text(
+                widget.cosmeticText,
+                style: TextStyle(
+                  color: Color(0xFFFDFAFA),
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold
+                ),
+              ),
+            ),
+            FlatButton(
+              onPressed: () {
+                widget.onRemove();
+              },
+              textColor: Color(0xFFFDFAFA),
+              padding: EdgeInsets.symmetric(horizontal: 4),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Icon(
+                    Icons.remove_shopping_cart,
+                    size: 30,
+                  ),
+                  Text(
+                    'Remove',
+                    style: TextStyle(
+                      fontSize: 16
+                    ),
+                  )
+                ],
+              ),
+            )
           ],
-        )));
-
-
-Widget counterButton = new Container(
-  child: new Row(
-    mainAxisAlignment: MainAxisAlignment.start,
-    children: <Widget>[
-      FlatButton(
-        onPressed:() {
-        
-        },
-        child: Container(
-          decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: <Color>[
-                  Color(0xFF159E94),
-                  Color(0xFF10DC4D),
-                ],
-              ),
-              borderRadius: BorderRadius.all(Radius.circular(100.0))),
-          padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-          child: Icon(Icons.add_circle),
-        ),
-      ),
-      Text(
-        '   $_counter  ',
-        style: TextStyle(color: Colors.red, fontSize: 20),
-      ),
-      FlatButton(
-        onPressed: () {},
-        textColor: Colors.white,
-        padding: const EdgeInsets.all(0.0),
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(80.0)),
-        child: Container(
-          decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: <Color>[
-                  Color(0xFF159E94),
-                  Color(0xFF10DC4D),
-                ],
-              ),
-              borderRadius: BorderRadius.all(Radius.circular(80.0))),
-          padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-          child: Icon(Icons.delete),
-        ),
-      ),
-    ],
-  ),
-);
+        )
+      ],
+    );
+  }
+}

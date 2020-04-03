@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:user_interface_project1/checkout.dart';
+import 'package:user_interface_project1/main.dart';
 
 class ItemCard extends StatefulWidget {
   ItemCard({
@@ -7,12 +9,16 @@ class ItemCard extends StatefulWidget {
     this.title,
     this.imagePath,
     this.cosmeticDropdownItems,
+    this.cosmeticStartValue,
+    this.cosmeticName,
     this.price
   }): super(key: key);
 
   final String title;
   final String imagePath;
   final double price;
+  final String cosmeticStartValue;
+  final String cosmeticName;
   final List<DropdownMenuItem<String>> cosmeticDropdownItems;
 
   @override
@@ -20,6 +26,14 @@ class ItemCard extends StatefulWidget {
 }
 
 class ItemCardState extends State<ItemCard> {
+  String selectedCosmetic;
+
+  @override
+  void initState() {
+    selectedCosmetic = widget.cosmeticStartValue;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -58,23 +72,42 @@ class ItemCardState extends State<ItemCard> {
                 fit: BoxFit.cover,
               ),
             ),
-            DropdownButton<String>(
-              elevation: 16,
-              iconSize: 24,
-              onChanged: (String value) { },
-              style: TextStyle(
-                fontSize: 12,
-                color: Color(0xFF4F5B55)
+            Container(
+              child: DropdownButton<String>(
+                iconSize: 24,
+                onChanged: (String value) {
+                  setState(() {
+                    selectedCosmetic = value;
+                    print(selectedCosmetic);
+                  });
+                },
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Color(0xFF4F5B55)
+                ),
+                isDense: true,
+                items: widget.cosmeticDropdownItems,
+                value: selectedCosmetic,
               ),
-              isDense: true,
-              hint: Text('Color'),
-              items: widget.cosmeticDropdownItems
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
                 FlatButton(
-                  onPressed: () { },
+                  onPressed: () {
+                    var cart = CheckoutPage.getShoppingCart();
+                    cart.add(
+                      CartItem(
+                        item: YodaItem(
+                          title: widget.title,
+                          price: widget.price,
+                          imagePath: widget.imagePath
+                        ),
+                        cosmeticText: '${widget.cosmeticName}: ${this.selectedCosmetic}',
+                        key: widget.key
+                      )
+                    );
+                  },
                   padding: EdgeInsets.all(0.5),
                   child: Ink(
                     decoration: BoxDecoration(
