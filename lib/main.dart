@@ -294,7 +294,15 @@ class TeesScreen extends StatelessWidget {
                     child: Text('Large'),
                     value: 'Large',
                   ),
-                ],
+                  DropdownMenuItem(
+                    child: Text('Extra Large'),
+                    value: 'Extra Large',
+                  ),
+                  DropdownMenuItem(
+                    child: Text('Extra Extra Large'),
+                    value: 'Extra Extra Large',
+                  ),
+                 ],
               );
             }).toList()
           ),
