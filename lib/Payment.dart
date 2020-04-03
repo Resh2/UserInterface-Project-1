@@ -1,18 +1,13 @@
-import 'dart:math';
-
 import 'package:flutter/rendering.dart';
 import 'package:flutter/material.dart';
 import 'package:user_interface_project1/shop.dart';
 
-void main() {
-  runApp(new CheckoutPage());
-}
 
-class CheckoutScreen extends StatelessWidget {
+class PaymentScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-      home: new CheckoutPage(),
+      home: new PaymentPage(),
       routes: <String, WidgetBuilder>{
         '/shop': (BuildContext context) => new Congrats()
       },
@@ -20,16 +15,15 @@ class CheckoutScreen extends StatelessWidget {
   }
 }
 
-class CheckoutPage extends StatefulWidget {
-  CheckoutPage({Key key, this.title}) : super(key: key);
+class PaymentPage extends StatefulWidget {
+  PaymentPage({Key key, this.title}) : super(key: key);
   final String title;
-  int count = 0;
 
   @override
-  _CheckoutPageState createState() => _CheckoutPageState();
+  _PaymentPageState createState() => _PaymentPageState();
 }
 
-class _CheckoutPageState extends State<CheckoutPage> {
+class _PaymentPageState extends State<PaymentPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -166,6 +160,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
             BillingInfoField(
               hintText: 'Card Number',
               icon: const Icon(Icons.credit_card),
+              keyboardType: TextInputType.number,
             ),
             new Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
