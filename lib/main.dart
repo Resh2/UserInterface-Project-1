@@ -1,114 +1,312 @@
 import 'package:flutter/material.dart';
 
-void main() => runApp(MyApp());
+import 'package:user_interface_project1/checkout.dart';
+import 'package:user_interface_project1/components/item-card.dart';
 
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+class YodaItem {
+  YodaItem({
+    this.title,
+    this.imagePath,
+    this.price
+  });
+
+  final String title;
+  final String imagePath;
+  final double price;
+}
+
+void main() {
+  runApp(new HomeScreen());
+}
+
+class HomeScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return new MaterialApp(
+      home: new MainPage(),
+      routes: <String, WidgetBuilder>{
+        '/setting': (BuildContext context) => new CheckoutPage(),
+      },
+    );
+  }
+}
+
+class MainPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-    //    // is not restarted.
-      //  primarySwatch: Colors.white,
-       
+      home: DefaultTabController(
+      length: 3,
+      child: Scaffold(
+        appBar: AppBar(
+          bottom: TabBar(
+            indicatorWeight: 1,
+            indicatorColor: Colors.red[100],
+            unselectedLabelColor: Colors.white,
+            tabs: [
+              Tab(text: 'Plush'),
+              Tab(
+                text: 'Phone Case',
+              ),
+              Tab(text: 'Tees'),
+            ],
+          ),
+          title: Text('BABY YODA MERCHANDISE'),
+          titleSpacing: 40.0,
+          backgroundColor: Color(0xFF1B9772),
+          actions: <Widget>[
+            Padding(
+              padding: EdgeInsets.only(right: 20.0),
+              child: GestureDetector(
+                onTap: () => Navigator.of(context).pushNamed('/setting'),
+                child: Icon(
+                  Icons.shopping_cart,
+                  size: 26.0,
+                ),
+              )),
+          ],
+          flexibleSpace: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [const Color(0xFF1B9772), const Color(0xFF0D4837)],
+              ),
+            ),
+          ),
+        ),
+        body: TabBarView(
+          children: [PlushScreen(), PhoneCaseScreen(), TeesScreen()],
+        ),
+        // body: TabBarView(
+        //   children: [PlushScreen(), PhoneCaseScreen(), TeesScreen()],
+        // ),
       ),
-      home: MyHomePage(title: 'Baby Yoda Merchandise'),
-    );
+    ));
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+class PlushScreen extends StatelessWidget {
+  final List<YodaItem> plushItems = [
+    YodaItem(
+      title: 'The Child Plush',
+      imagePath: 'assets/plush-1.PNG',
+      price: 24.99
+    ),
+    YodaItem(
+      title: 'Jedi Baby',
+      imagePath: 'assets/plush-2.PNG',
+      price: 19.99
+    ),
+    YodaItem(
+      title: 'Yoda with Frog',
+      imagePath: 'assets/plush-3.PNG',
+      price: 24.99
+    ),
+    YodaItem(
+      title: 'Yoda with Frog 2',
+      imagePath: 'assets/plush-4.PNG',
+      price: 33.99
+    ),
+    YodaItem(
+      title: 'Baby Yoda Alone',
+      imagePath: 'assets/plush-5.PNG',
+      price: 24.99
+    ),
+    YodaItem(
+      title: 'Yoda with Frog 2',
+      imagePath: 'assets/plush-6.PNG',
+      price: 15.99
+    )
+  ];
 
-  final String title;
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-    
-      _counter++;
-    });
-  }
-  
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-  appBar: AppBar(
-  title: Text("BABY YODA MERCHANDISE"), 
-  actions: <Widget>[
-    Padding(
-      padding: EdgeInsets.only(right: 20.0),
-      child: GestureDetector(
-        onTap: () {},
-        child: Icon(
-          Icons.shopping_cart,
-          size: 26.0,
-        ),
-      )
-    ),
-  ],
-      flexibleSpace:  Container(
-      decoration: BoxDecoration(
-      gradient: LinearGradient(
-      begin: Alignment.topCenter,
-      end: Alignment.bottomCenter,
-      colors: [const Color(0xFF1B9772), const Color(0xFF0D4837)], 
-    ),
-  ),
-),
-),
+    return MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: Scaffold(
+          body: GridView.count(
+            crossAxisSpacing: 5,
+            crossAxisCount: 2,
+            childAspectRatio: 0.8,
+            children: plushItems.map<Widget>((item) {
+              return ItemCard(
+                title: item.title,
+                price: item.price,
+                imagePath: item.imagePath,
+                cosmeticName: 'Color',
+                cosmeticStartValue: 'Green',
+                cosmeticDropdownItems: <DropdownMenuItem<String>>[
+                  DropdownMenuItem(
+                    child: Text('Green', style: TextStyle(color: Colors.green)),
+                    value: 'Green',
+                  ),
+                  DropdownMenuItem(
+                    child: Text('Pink', style: TextStyle(color: Colors.pink)),
+                    value: 'Pink',
+                  ),
+                  DropdownMenuItem(
+                    child: Text('Blue', style: TextStyle(color: Colors.blue)),
+                    value: 'Blue',
+                  ),
+                ],
+              );
+            }).toList()
+          ),
+          backgroundColor: Color(0xFF4F5B55),
+        ));
+  }
+}
 
-        body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.display1,
-            ),
-          ],
+class PhoneCaseScreen extends StatelessWidget {
+  final List<YodaItem> caseItems = [
+    YodaItem(
+      title: 'Mandalorian',
+      imagePath: 'assets/case-1.PNG',
+      price: 24.99
+    ),
+    YodaItem(
+      title: 'Shiny Baby Yoda',
+      imagePath: 'assets/case-2.PNG',
+      price: 9.99
+    ),
+    YodaItem(
+      title: 'Yoda Clones',
+      imagePath: 'assets/case-3.PNG',
+      price: 4.99
+    ),
+    YodaItem(
+      title: 'Bright Yodas',
+      imagePath: 'assets/case-4.PNG',
+      price: 13.84
+    ),
+    YodaItem(
+      title: 'Desert Yoda',
+      imagePath: 'assets/case-5.PNG',
+      price: 8.49
+    ),
+    YodaItem(
+      title: 'Chimken Yoda',
+      imagePath: 'assets/case-6.PNG',
+      price: 39.39
+    ),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        body: GridView.count(
+          crossAxisSpacing: 5,
+          crossAxisCount: 2,
+          childAspectRatio: 0.8,
+          children: caseItems.map<Widget>((item) {
+            return ItemCard(
+              title: item.title,
+              price: item.price,
+              imagePath: item.imagePath,
+              cosmeticName: 'Phone Type',
+              cosmeticStartValue: 'iPhone',
+              cosmeticDropdownItems: <DropdownMenuItem<String>>[
+                DropdownMenuItem(
+                  child: Text('iPhone'),
+                  value: 'iPhone',
+                ),
+                DropdownMenuItem(
+                  child: Text('Samsung'),
+                  value: 'Samsung',
+                ),
+                DropdownMenuItem(
+                  child: Text('HTC'),
+                  value: 'HTC',
+                ),
+              ],
+            );
+          }).toList()
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-              ),
+        backgroundColor: Color(0xFF4F5B55),
+      )
     );
+  }
+}
+
+class TeesScreen extends StatelessWidget {
+  final List<YodaItem> teeItems = [
+    YodaItem(
+      title: 'Yoda & Mando',
+      imagePath: 'assets/tee-1.PNG',
+      price: 14.49
+    ),
+    YodaItem(
+      title: 'Adopt Yoda',
+      imagePath: 'assets/tee-2.PNG',
+      price: 13.74
+    ),
+    YodaItem(
+      title: 'Sad Yoda',
+      imagePath: 'assets/tee-3.PNG',
+      price: 21.49
+    ),
+    YodaItem(
+      title: 'Mando in Sunset',
+      imagePath: 'assets/tee-4.PNG',
+      price: 24.85
+    ),
+    YodaItem(
+      title: 'Exploring',
+      imagePath: 'assets/tee-5.PNG',
+      price: 16.00
+    ),
+    YodaItem(
+      title: 'Pira Yoda',
+      imagePath: 'assets/tee-6.PNG',
+      price: 25.87
+    ),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: Scaffold(
+          body: GridView.count(
+            crossAxisSpacing: 5,
+            crossAxisCount: 2,
+            childAspectRatio: 0.8,
+            children: teeItems.map<Widget>((item) {
+              return ItemCard(
+                title: item.title,
+                price: item.price,
+                imagePath: item.imagePath,
+                cosmeticName: 'Shirt Size',
+                cosmeticStartValue: 'Small',
+                cosmeticDropdownItems: <DropdownMenuItem<String>>[
+                  DropdownMenuItem(
+                    child: Text('Small'),
+                    value: 'Small',
+                  ),
+                  DropdownMenuItem(
+                    child: Text('Medium'),
+                    value: 'Medium',
+                  ),
+                  DropdownMenuItem(
+                    child: Text('Large'),
+                    value: 'Large',
+                  ),
+                  DropdownMenuItem(
+                    child: Text('Extra Large'),
+                    value: 'Extra Large',
+                  ),
+                  DropdownMenuItem(
+                    child: Text('Extra Extra Large'),
+                    value: 'Extra Extra Large',
+                  ),
+                 ],
+              );
+            }).toList()
+          ),
+          backgroundColor: Color(0xFF4F5B55),
+        ));
   }
 }
