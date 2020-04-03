@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:user_interface_project1/checkout.dart';
-import 'package:user_interface_project1/count.dart';
+import 'package:user_interface_project1/Payment.dart';
+import 'package:user_interface_project1/shop.dart';
+
 
 
 void main() {
